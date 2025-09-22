@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zahlensystem-Umrechner</title>
+<style>
+  body {
+    font-family: sans-serif;
+    background: black;
+    color: white;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  h1 {
+    font-size: 1.6em;
+    margin: 0.5em 0;
+  }
+  button {
+    font-size: 1.4em;
+    padding: 0.8em;
+    margin: 0.5em;
+    width: 90%;
+    border-radius: 15px;
+    border: none;
+    background: #00aaff;
+    color: white;
+  }
+  input {
+    font-size: 1.4em;
+    text-align: center;
+    padding: 0.5em;
+    margin: 0.5em;
+    width: 80%;
+    border-radius: 10px;
+    border: 2px solid #00aaff;
+    background: black;
+    color: white;
+  }
+  .result {
+    font-size: 1.4em;
+    margin: 0.8em 0;
+    word-wrap: break-word;
+  }
+</style>
+</head>
+<body>
+
+<h1>Zahlensystem-Umrechner</h1>
+
+<div id="start">
+  <button onclick="chooseMode('decimal')">Dezimal eingeben</button>
+  <button onclick="chooseMode('binary')">Binär eingeben</button>
+  <button onclick="chooseMode('hex')">Hexadezimal eingeben</button>
+</div>
+
+<div id="converter" style="display:none;">
+  <h2 id="modeLabel"></h2>
+  <input id="inputField" placeholder="Zahl eingeben">
+  <button onclick="convert()">Umrechnen</button>
+  <div class="result" id="res1">---</div>
+  <div class="result" id="res2">---</div>
+  <button onclick="goBack()">Zurück</button>
+</div>
+
+<script>
+let mode = "decimal";
+
+function chooseMode(m) {
+  mode = m;
+  document.getElementById("start").style.display = "none";
+  document.getElementById("converter").style.display = "block";
+  document.getElementById("modeLabel").innerText = 
+    (m === "decimal" ? "Dezimal" : m === "binary" ? "Binär" : "Hexadezimal") + " Eingabe";
+}
+
+function formatBinary(binStr) {
+  // Mit führenden Nullen auf Vielfaches von 4 auffüllen
+  const padding = (4 - (binStr.length % 4)) % 4;
+  const padded = "0".repeat(padding) + binStr;
+
+  // In 4er-Gruppen splitten
+  return padded.replace(/(.{4})(?=.)/g, "$1 ");
+}
+
+function convert() {
+  const input = document.getElementById("inputField").value.trim();
+  let number;
+  try {
+    if (mode === "decimal") {
+      number = parseInt(input, 10);
+      document.getElementById("res1").innerText = "Binär: " + formatBinary(number.toString(2));
+      document.getElementById("res2").innerText = "Hexadezimal: " + number.toString(16).toUpperCase();
+    } else if (mode === "binary") {
+      number = parseInt(input, 2);
+      document.getElementById("res1").innerText = "Dezimal: " + number;
+      document.getElementById("res2").innerText = "Hexadezimal: " + number.toString(16).toUpperCase();
+    } else if (mode === "hex") {
+      number = parseInt(input, 16);
+      document.getElementById("res1").innerText = "Dezimal: " + number;
+      document.getElementById("res2").innerText = "Binär: " + formatBinary(number.toString(2));
+    }
+  } catch (e) {
+    document.getElementById("res1").innerText = "❌ Ungültige Eingabe";
+    document.getElementById("res2").innerText = "";
+  }
+}
+
+function goBack() {
+  document.getElementById("converter").style.display = "none";
+  document.getElementById("start").style.display = "block";
+  document.getElementById("inputField").value = "";
+  document.getElementById("res1").innerText = "---";
+  document.getElementById("res2").innerText = "---";
+}
+</script>
+
+</body>
+</html>
